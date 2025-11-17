@@ -7,3 +7,19 @@ export interface PaymentTransaction {
   status: string;
   paymentAt: string;
 }
+
+export interface Merchant {
+  mchtCode: string;
+  mchtName: string;
+  status: string;
+  bizType: string;
+}
+
+export interface MerchantDetail extends Merchant {
+  bizNo: string;
+  address: string;
+  phone: string;
+  email: string;
+  registeredAt: string;
+  updatedAt: string;
+}

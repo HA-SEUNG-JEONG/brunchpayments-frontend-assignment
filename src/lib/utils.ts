@@ -6,7 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(dateString: string): string {
+  if (!dateString) return "-";
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -17,6 +19,7 @@ export function formatDate(dateString: string): string {
 
 export function formatAmount(amount: string, currency: string): string {
   const numAmount = Number(amount);
+  if (isNaN(numAmount)) return `${amount} ${currency}`;
   const formatted = new Intl.NumberFormat("ko-KR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -35,6 +38,34 @@ export function getStatusColor(status: string): string {
     default:
       return "bg-gray-400 text-white";
   }
+}
+
+export function getMerchantStatusColor(status: string): string {
+  switch (status) {
+    case "ACTIVE":
+      return "bg-green-100 text-green-800";
+    case "INACTIVE":
+      return "bg-gray-100 text-gray-800";
+    case "READY":
+      return "bg-yellow-100 text-yellow-800";
+    case "CLOSED":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
+
+export function getBizTypeLabel(bizType: string): string {
+  const labels: Record<string, string> = {
+    CAFE: "카페",
+    SHOP: "쇼핑몰",
+    MART: "마트",
+    APP: "앱",
+    TRAVEL: "여행",
+    EDU: "교육",
+    TEST: "테스트"
+  };
+  return labels[bizType] || bizType;
 }
 
 export function getPayTypeLabel(payType: string): string {
