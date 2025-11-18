@@ -13,6 +13,7 @@ import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { TableSkeleton } from "@/components/TableSkeleton";
 import { cn, getMerchantStatusColor, getBizTypeLabel } from "@/lib/utils";
 import { useFilteredData } from "@/hooks/useFilteredData";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { Merchant } from "@/lib/types";
 import { BASE_URL } from "@/lib/api";
 
@@ -27,6 +28,9 @@ export function MerchantsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [bizTypeFilter, setBizTypeFilter] = useState("");
+
+  // 검색어 디바운스 (300ms 지연)
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   useEffect(() => {
     const fetchMerchants = async () => {
@@ -58,7 +62,7 @@ export function MerchantsPage() {
   // 검색 및 필터링 로직 - 커스텀 훅 사용
   const filteredMerchants = useFilteredData(
     merchants,
-    searchQuery,
+    debouncedSearchQuery,
     ["mchtCode", "mchtName"],
     [
       { field: "status", value: statusFilter },

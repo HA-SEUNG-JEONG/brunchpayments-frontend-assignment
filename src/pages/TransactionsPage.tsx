@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useFilteredData } from "@/hooks/useFilteredData";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   Table,
   TableBody,
@@ -39,6 +40,8 @@ export function TransactionsPage() {
   const [payTypeFilter, setPayTypeFilter] = useState("");
   const [currencyFilter, setCurrencyFilter] = useState("");
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -68,12 +71,12 @@ export function TransactionsPage() {
   // 필터링 시 첫 페이지로 리셋
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusFilter, payTypeFilter, currencyFilter]);
+  }, [debouncedSearchQuery, statusFilter, payTypeFilter, currencyFilter]);
 
   // 검색 및 필터링 로직 - 커스텀 훅 사용
   const filteredData = useFilteredData(
     data,
-    searchQuery,
+    debouncedSearchQuery,
     ["mchtCode", "paymentCode"],
     [
       { field: "status", value: statusFilter },
@@ -81,8 +84,6 @@ export function TransactionsPage() {
       { field: "currency", value: currencyFilter }
     ]
   );
-
-  console.log(filteredData, "filteredData");
 
   // 현재 페이지에 표시할 항목 계산
   const displayedItems = isMobile

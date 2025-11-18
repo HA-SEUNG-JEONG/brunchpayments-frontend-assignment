@@ -28,10 +28,10 @@ export const useFilteredData = <T>(
 ) => {
   return useMemo(() => {
     return data.filter((item) => {
-      const passesSearch = matchesSearchQuery(item, searchQuery, searchFields);
-      const passesFilters = matchesAllFilters(item, exactFilters);
+      const matchedSearch = matchesSearchQuery(item, searchQuery, searchFields);
+      const matchedFilters = matchesAllFilters(item, exactFilters);
 
-      return passesSearch && passesFilters;
+      return matchedSearch && matchedFilters;
     });
   }, [data, searchQuery, searchFields, exactFilters]);
 };
