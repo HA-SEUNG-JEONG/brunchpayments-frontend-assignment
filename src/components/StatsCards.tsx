@@ -81,15 +81,15 @@ export function StatsCards({ data }: StatsCardsProps) {
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <div
+          <article
             key={stat.title}
             className={`group relative overflow-hidden rounded-xl border-2 ${stat.cardBg} border-gray-200 p-6 shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105`}
           >
             <div className="flex items-start justify-between">
               <div>
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
                   {stat.title}
-                </div>
+                </h3>
                 <div className="flex items-baseline space-x-2">
                   <div
                     className={`text-3xl font-bold tracking-tight ${stat.valueColor}`}
@@ -101,34 +101,32 @@ export function StatsCards({ data }: StatsCardsProps) {
                   </div>
                 </div>
               </div>
-              <div
-                className={`rounded-lg p-3 ${stat.bgColor} transition-transform duration-200 group-hover:scale-110`}
-              >
+              <div className={`rounded-lg p-3 ${stat.bgColor}`}>
                 <Icon className={`h-6 w-6 ${stat.iconColor}`} />
               </div>
             </div>
-          </div>
+          </article>
         );
       })}
       {Object.entries(currencyGroups).map(([currency, amount]) => (
-        <div
+        <article
           key={currency}
-          className="group relative overflow-hidden rounded-xl border-2 bg-yellow-50 border-yellow-200 p-6 shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105"
+          className="group relative overflow-hidden rounded-xl border-2 bg-yellow-50 border-yellow-200 p-6"
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
                 총 거래액 ({currency})
-              </div>
-              <div className="text-2xl font-bold tracking-tight text-yellow-800">
+              </h3>
+              <div className="text-lg font-bold tracking-tight text-yellow-800">
                 {formatAmount(amount.toString(), currency)}
               </div>
             </div>
-            <div className="rounded-lg bg-yellow-100 p-3 transition-transform duration-200 group-hover:scale-110">
+            <div className="shrink-0 rounded-lg bg-yellow-100 p-3">
               <DollarSign className="h-6 w-6 text-yellow-700" />
             </div>
           </div>
-        </div>
+        </article>
       ))}
     </div>
   );

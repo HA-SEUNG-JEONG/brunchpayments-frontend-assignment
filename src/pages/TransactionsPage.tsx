@@ -1,10 +1,12 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import type { PaymentTransaction } from "@/lib/types";
 import { StatsCards } from "@/components/StatsCards";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { TableSkeleton } from "@/components/TableSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useFilteredData } from "@/hooks/useFilteredData";
 import {
   Table,
   TableBody,
@@ -26,13 +28,16 @@ export function TransactionsPage() {
   const [data, setData] = useState<PaymentTransaction[]>([]);
   const isMobile = useIsMobile();
   const [currentPage, setCurrentPage] = useState(1);
-  const [displayedItems, setDisplayedItems] = useState<PaymentTransaction[]>(
-    []
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const itemsPerPage = 20;
   const observerTarget = useRef<HTMLDivElement>(null);
+
+  // 검색 및 필터 상태
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [payTypeFilter, setPayTypeFilter] = useState("");
+  const [currencyFilter, setCurrencyFilter] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,15 +65,32 @@ export function TransactionsPage() {
     fetchData();
   }, []);
 
+  // 필터링 시 첫 페이지로 리셋
   useEffect(() => {
-    if (isMobile) {
-      setDisplayedItems(data.slice(0, currentPage * itemsPerPage));
-    } else {
-      const start = (currentPage - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      setDisplayedItems(data.slice(start, end));
-    }
-  }, [data, currentPage, isMobile]);
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, payTypeFilter, currencyFilter]);
+
+  // 검색 및 필터링 로직 - 커스텀 훅 사용
+  const filteredData = useFilteredData(
+    data,
+    searchQuery,
+    ["mchtCode", "paymentCode"],
+    [
+      { field: "status", value: statusFilter },
+      { field: "payType", value: payTypeFilter },
+      { field: "currency", value: currencyFilter }
+    ]
+  );
+
+  console.log(filteredData, "filteredData");
+
+  // 현재 페이지에 표시할 항목 계산
+  const displayedItems = isMobile
+    ? filteredData.slice(0, currentPage * itemsPerPage)
+    : filteredData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -99,7 +121,29 @@ export function TransactionsPage() {
     };
   }, [handleObserver, isMobile]);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // 고유한 값들 추출 (필터 옵션용) - 데이터 로딩 후 불변이므로 useMemo 사용
+  const uniqueStatuses = useMemo(
+    () => Array.from(new Set(data.map((item) => item.status))),
+    [data]
+  );
+  const uniquePayTypes = useMemo(
+    () => Array.from(new Set(data.map((item) => item.payType))),
+    [data]
+  );
+  const uniqueCurrencies = useMemo(
+    () => Array.from(new Set(data.map((item) => item.currency))),
+    [data]
+  );
+
+  // 필터 초기화 핸들러
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("");
+    setPayTypeFilter("");
+    setCurrencyFilter("");
+  };
 
   const renderContent = () => {
     if (isLoading) {
@@ -122,15 +166,129 @@ export function TransactionsPage() {
 
     return (
       <>
-        <StatsCards data={data} />
+        <section aria-label="거래 통계">
+          <StatsCards data={data} />
+        </section>
 
-        <div className="rounded-xl border-2 border-gray-200 bg-white shadow-xl">
-          <div className="border-b-2 border-gray-200 bg-linear-to-r from-blue-500 to-purple-500 px-6 py-4 text-black">
+        {/* 검색 및 필터 섹션 */}
+        <section
+          className="rounded-xl border-2 border-gray-200 bg-white shadow-xl p-6 mb-6"
+          aria-label="검색 및 필터"
+        >
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900">
+                  검색 및 필터
+                </h2>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  초기화
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* 검색 입력 */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    검색
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="가맹점 코드 또는 결제 코드"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                {/* 결제 상태 필터 */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    결제 상태
+                  </label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">전체</option>
+                    {uniqueStatuses.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 결제 수단 필터 */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    결제 수단
+                  </label>
+                  <select
+                    value={payTypeFilter}
+                    onChange={(e) => setPayTypeFilter(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">전체</option>
+                    {uniquePayTypes.map((payType) => (
+                      <option key={payType} value={payType}>
+                        {getPayTypeLabel(payType)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 통화 필터 */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    통화
+                  </label>
+                  <select
+                    value={currencyFilter}
+                    onChange={(e) => setCurrencyFilter(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">전체</option>
+                    {uniqueCurrencies.map((currency) => (
+                      <option key={currency} value={currency}>
+                        {currency}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 필터 결과 표시 */}
+              <div className="text-sm text-gray-600">
+                {filteredData.length !== data.length && (
+                  <span>
+                    전체 {data.length.toLocaleString("ko-KR")}건 중{" "}
+                    <span className="font-bold text-blue-600">
+                      {filteredData.length.toLocaleString("ko-KR")}건
+                    </span>{" "}
+                    표시
+                  </span>
+                )}
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <section
+          className="rounded-xl border-2 border-gray-200 bg-white shadow-xl"
+          aria-label="거래 내역 테이블"
+        >
+          <header className="border-b-2 border-gray-200 bg-linear-to-r from-blue-500 to-purple-500 px-6 py-4 text-black">
             <h2 className="text-lg font-bold text-white">거래 내역</h2>
             <p className="mt-1 text-sm text-blue-100">
-              총 {data.length.toLocaleString("ko-KR")}건의 거래 내역
+              총 {filteredData.length.toLocaleString("ko-KR")}건의 거래 내역
             </p>
-          </div>
+          </header>
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-100 hover:bg-gray-100">
@@ -204,7 +362,7 @@ export function TransactionsPage() {
               )}
             </TableBody>
           </Table>
-        </div>
+        </section>
 
         {!isMobile && totalPages > 1 && (
           <div className="mt-8 flex items-center justify-center gap-3">
@@ -236,7 +394,7 @@ export function TransactionsPage() {
           </div>
         )}
 
-        {isMobile && displayedItems.length < data.length && (
+        {isMobile && displayedItems.length < filteredData.length && (
           <div
             ref={observerTarget}
             className="flex items-center justify-center gap-2 py-6 text-center"
@@ -252,7 +410,7 @@ export function TransactionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-purple-50 p-4 md:p-6 lg:p-8">
+    <main className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-purple-50 p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-900">
           거래내역 대시보드
@@ -263,6 +421,6 @@ export function TransactionsPage() {
 
         {renderContent()}
       </div>
-    </div>
+    </main>
   );
 }
