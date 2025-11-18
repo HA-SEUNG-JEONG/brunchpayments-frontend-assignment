@@ -126,10 +126,14 @@ export function MerchantsPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* 검색 입력 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="merchant-search"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     검색
                   </label>
                   <Input
+                    id="merchant-search"
                     type="text"
                     placeholder="가맹점 코드 또는 가맹점명"
                     value={searchQuery}
@@ -140,10 +144,14 @@ export function MerchantsPage() {
 
                 {/* 가맹점 상태 필터 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="merchant-status-filter"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     가맹점 상태
                   </label>
                   <select
+                    id="merchant-status-filter"
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -159,10 +167,14 @@ export function MerchantsPage() {
 
                 {/* 업종 필터 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="merchant-biztype-filter"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     업종
                   </label>
                   <select
+                    id="merchant-biztype-filter"
                     value={bizTypeFilter}
                     onChange={(e) => setBizTypeFilter(e.target.value)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

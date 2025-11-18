@@ -194,10 +194,14 @@ export function TransactionsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* 검색 입력 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="transaction-search"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     검색
                   </label>
                   <Input
+                    id="transaction-search"
                     type="text"
                     placeholder="가맹점 코드 또는 결제 코드"
                     value={searchQuery}
@@ -208,10 +212,14 @@ export function TransactionsPage() {
 
                 {/* 결제 상태 필터 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="transaction-status-filter"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     결제 상태
                   </label>
                   <select
+                    id="transaction-status-filter"
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -227,10 +235,14 @@ export function TransactionsPage() {
 
                 {/* 결제 수단 필터 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="transaction-paytype-filter"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     결제 수단
                   </label>
                   <select
+                    id="transaction-paytype-filter"
                     value={payTypeFilter}
                     onChange={(e) => setPayTypeFilter(e.target.value)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -246,10 +258,14 @@ export function TransactionsPage() {
 
                 {/* 통화 필터 */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="transaction-currency-filter"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     통화
                   </label>
                   <select
+                    id="transaction-currency-filter"
                     value={currencyFilter}
                     onChange={(e) => setCurrencyFilter(e.target.value)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
