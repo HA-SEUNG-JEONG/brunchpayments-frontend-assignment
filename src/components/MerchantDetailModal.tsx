@@ -10,12 +10,13 @@ import {
 import {
   formatDate,
   getMerchantStatusColor,
-  getBizTypeLabel
+  getBizTypeLabel,
+  getCodeLabel
 } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { MerchantDetail } from "@/lib/types";
+import type { MerchantDetail, CommonCode } from "@/lib/types";
 import DetailField from "./DetailField";
-import { BASE_URL } from "@/lib/api";
+import { BASE_URL, fetchMerchantStatusCodes } from "@/lib/api";
 
 interface MerchantDetailModalProps {
   mchtCode: string | null;
@@ -31,6 +32,22 @@ export function MerchantDetailModal({
   const [merchant, setMerchant] = useState<MerchantDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [merchantStatusCodes, setMerchantStatusCodes] = useState<CommonCode[]>(
+    []
+  );
+
+  // 공통 코드 로드
+  useEffect(() => {
+    const loadCommonCodes = async () => {
+      try {
+        const statusCodes = await fetchMerchantStatusCodes();
+        setMerchantStatusCodes(statusCodes);
+      } catch (error) {
+        console.error("가맹점 상태 코드를 불러오는데 실패했습니다.:", error);
+      }
+    };
+    loadCommonCodes();
+  }, []);
 
   useEffect(() => {
     if (!mchtCode || !open) {
@@ -115,7 +132,7 @@ export function MerchantDetailModal({
               merchant.status
             )}`}
           >
-            {merchant.status}
+            {getCodeLabel(merchant.status, merchantStatusCodes)}
           </span>
         </DetailField>
 

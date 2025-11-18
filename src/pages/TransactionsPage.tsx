@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import type { PaymentTransaction } from "@/lib/types";
+import type { PaymentTransaction, CommonCode } from "@/lib/types";
 import { StatsCards } from "@/components/StatsCards";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { TableSkeleton } from "@/components/TableSkeleton";
@@ -20,10 +20,14 @@ import {
   formatDate,
   formatAmount,
   getStatusColor,
-  getPayTypeLabel,
+  getCodeLabel,
   cn
 } from "@/lib/utils";
-import { BASE_URL } from "@/lib/api";
+import {
+  BASE_URL,
+  fetchPaymentStatusCodes,
+  fetchPaymentTypeCodes
+} from "@/lib/api";
 
 export function TransactionsPage() {
   const [data, setData] = useState<PaymentTransaction[]>([]);
@@ -34,6 +38,12 @@ export function TransactionsPage() {
   const itemsPerPage = 20;
   const observerTarget = useRef<HTMLDivElement>(null);
 
+  // 공통 코드 상태
+  const [paymentStatusCodes, setPaymentStatusCodes] = useState<CommonCode[]>(
+    []
+  );
+  const [paymentTypeCodes, setPaymentTypeCodes] = useState<CommonCode[]>([]);
+
   // 검색 및 필터 상태
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -41,6 +51,23 @@ export function TransactionsPage() {
   const [currencyFilter, setCurrencyFilter] = useState("");
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // 공통 코드 로드
+  useEffect(() => {
+    const loadCommonCodes = async () => {
+      try {
+        const [statusCodes, typeCodes] = await Promise.all([
+          fetchPaymentStatusCodes(),
+          fetchPaymentTypeCodes()
+        ]);
+        setPaymentStatusCodes(statusCodes);
+        setPaymentTypeCodes(typeCodes);
+      } catch (error) {
+        console.error("결제 상태 코드를 불러오는데 실패했습니다.:", error);
+      }
+    };
+    loadCommonCodes();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -227,7 +254,7 @@ export function TransactionsPage() {
                     <option value="">전체</option>
                     {uniqueStatuses.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {getCodeLabel(status, paymentStatusCodes)}
                       </option>
                     ))}
                   </select>
@@ -250,7 +277,7 @@ export function TransactionsPage() {
                     <option value="">전체</option>
                     {uniquePayTypes.map((payType) => (
                       <option key={payType} value={payType}>
-                        {getPayTypeLabel(payType)}
+                        {getCodeLabel(payType, paymentTypeCodes)}
                       </option>
                     ))}
                   </select>
@@ -359,7 +386,7 @@ export function TransactionsPage() {
                       {item.currency}
                     </TableCell>
                     <TableCell className="text-gray-700">
-                      {getPayTypeLabel(item.payType)}
+                      {getCodeLabel(item.payType, paymentTypeCodes)}
                     </TableCell>
                     <TableCell>
                       <span
@@ -368,7 +395,7 @@ export function TransactionsPage() {
                           getStatusColor(item.status)
                         )}
                       >
-                        {item.status}
+                        {getCodeLabel(item.status, paymentStatusCodes)}
                       </span>
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">

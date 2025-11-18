@@ -1,8 +1,14 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { CommonCode } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function getCodeLabel(code: string, codeList: CommonCode[]): string {
+  const found = codeList.find((c) => c.code === code);
+  return found?.description || code;
 }
 
 export function formatDate(dateString: string): string {

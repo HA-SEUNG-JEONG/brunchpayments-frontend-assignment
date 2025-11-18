@@ -23,3 +23,8 @@ export interface MerchantDetail extends Merchant {
   registeredAt: string;
   updatedAt: string;
 }
+
+export interface CommonCode {
+  code: string;
+  description: string;
+}

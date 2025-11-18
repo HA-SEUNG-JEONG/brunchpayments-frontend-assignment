@@ -11,11 +11,16 @@ import { Input } from "@/components/ui/input";
 import { MerchantDetailModal } from "@/components/MerchantDetailModal";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { TableSkeleton } from "@/components/TableSkeleton";
-import { cn, getMerchantStatusColor, getBizTypeLabel } from "@/lib/utils";
+import {
+  cn,
+  getMerchantStatusColor,
+  getBizTypeLabel,
+  getCodeLabel
+} from "@/lib/utils";
 import { useFilteredData } from "@/hooks/useFilteredData";
 import { useDebounce } from "@/hooks/useDebounce";
-import type { Merchant } from "@/lib/types";
-import { BASE_URL } from "@/lib/api";
+import type { Merchant, CommonCode } from "@/lib/types";
+import { BASE_URL, fetchMerchantStatusCodes } from "@/lib/api";
 
 export function MerchantsPage() {
   const [merchants, setMerchants] = useState<Merchant[]>([]);
@@ -24,6 +29,11 @@ export function MerchantsPage() {
   const [selectedMchtCode, setSelectedMchtCode] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // 공통 코드 상태
+  const [merchantStatusCodes, setMerchantStatusCodes] = useState<CommonCode[]>(
+    []
+  );
+
   // 검색 및 필터 상태
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -31,6 +41,19 @@ export function MerchantsPage() {
 
   // 검색어 디바운스 (300ms 지연)
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // 공통 코드 로드
+  useEffect(() => {
+    const loadCommonCodes = async () => {
+      try {
+        const statusCodes = await fetchMerchantStatusCodes();
+        setMerchantStatusCodes(statusCodes);
+      } catch (error) {
+        console.error("가맹점 상태 코드를 불러오는데 실패했습니다.:", error);
+      }
+    };
+    loadCommonCodes();
+  }, []);
 
   useEffect(() => {
     const fetchMerchants = async () => {
@@ -159,7 +182,7 @@ export function MerchantsPage() {
                     <option value="">전체</option>
                     {uniqueStatuses.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {getCodeLabel(status, merchantStatusCodes)}
                       </option>
                     ))}
                   </select>
@@ -260,7 +283,7 @@ export function MerchantsPage() {
                           getMerchantStatusColor(merchant.status)
                         )}
                       >
-                        {merchant.status}
+                        {getCodeLabel(merchant.status, merchantStatusCodes)}
                       </span>
                     </TableCell>
                     <TableCell className="text-gray-700">
