@@ -14,7 +14,7 @@ export async function fetchPaymentStatusCodes(): Promise<CommonCode[]> {
 }
 
 export async function fetchPaymentTypeCodes(): Promise<CommonCode[]> {
-  const response = await fetch(`${BASE_URL}/common/payment-type/all`);
+  const response = await fetch(`${BASE_URL}/common/paymemt-type/all`);
   if (!response.ok) {
     throw new Error(
       `결제 수단 코드를 불러오는데 실패했습니다.: ${response.status}`
@@ -33,4 +33,18 @@ export async function fetchMerchantStatusCodes(): Promise<CommonCode[]> {
   }
   const { data } = await response.json();
   return data;
+}
+
+export async function logout(): Promise<void> {
+  // 로컬 스토리지에서 토큰 제거
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+
+  // 추가적인 로그아웃 API 호출이 필요한 경우 여기에 구현
+  // const response = await fetch(`${BASE_URL}/auth/logout`, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+  //   }
+  // });
 }
