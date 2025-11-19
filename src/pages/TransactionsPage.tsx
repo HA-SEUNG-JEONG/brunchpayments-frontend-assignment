@@ -243,9 +243,9 @@ export function TransactionsPage() {
           className="rounded-xl border-2 border-gray-200 bg-white shadow-xl"
           aria-label="거래 내역 테이블"
         >
-          <header className="border-b-2 border-gray-200 bg-linear-to-r from-blue-500 to-purple-500 px-6 py-4 text-black">
-            <h2 className="text-lg font-bold text-white">거래 내역</h2>
-            <p className="mt-1 text-sm text-blue-100">
+          <header className="border-b-2 border-gray-200 px-6 py-4 text-black">
+            <h2 className="text-lg font-bold text-black">거래 내역</h2>
+            <p className="mt-1 text-sm text-black">
               총 {filteredData.length.toLocaleString("ko-KR")}건의 거래 내역
             </p>
           </header>
@@ -282,7 +282,7 @@ export function TransactionsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-purple-50 p-4 md:p-6 lg:p-8">
+    <main className="min-h-screen p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-900">
           거래내역 대시보드

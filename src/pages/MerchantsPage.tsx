@@ -233,9 +233,9 @@ export function MerchantsPage() {
           className="rounded-xl border-2 border-gray-200 bg-white shadow-xl"
           aria-label="가맹점 목록 테이블"
         >
-          <header className="border-b-2 border-gray-200 bg-linear-to-r from-blue-500 to-purple-500 px-6 py-4">
-            <h2 className="text-lg font-bold text-white">가맹점 목록</h2>
-            <p className="mt-1 text-sm text-blue-100">
+          <header className="border-b-2 border-gray-200 px-6 py-4">
+            <h2 className="text-lg font-bold text-black">가맹점 목록</h2>
+            <p className="mt-1 text-sm text-black">
               총 {filteredMerchants.length.toLocaleString("ko-KR")}개의 가맹점
             </p>
           </header>
@@ -308,7 +308,7 @@ export function MerchantsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-purple-50 p-4 md:p-6 lg:p-8">
+    <main className="min-h-screen p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-900">
           가맹점 조회
