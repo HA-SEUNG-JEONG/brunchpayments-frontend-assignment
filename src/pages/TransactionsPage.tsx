@@ -12,7 +12,7 @@ import { TransactionsTableHeader } from "@/components/TransactionsTableHeader";
 import { TransactionsTableBody } from "@/components/TransactionsTableBody";
 import { Pagination } from "@/components/Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useFilteredData } from "@/hooks/useFilteredData";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Table } from "@/components/ui/table";

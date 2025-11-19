@@ -22,7 +22,7 @@ export function Pagination({
       <button
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        className="rounded-lg bg-white border-2 border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
+        className="cursor-pointer rounded-lg bg-white border border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
       >
         이전
       </button>
@@ -34,11 +34,10 @@ export function Pagination({
       <button
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        className="rounded-lg bg-white border-2 border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
+        className="cursor-pointer rounded-lg bg-white border border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
       >
         다음
       </button>
     </div>
   );
 }
-
