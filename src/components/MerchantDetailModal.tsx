@@ -15,7 +15,7 @@ import {
 } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MerchantDetail, CommonCode } from "@/lib/types";
-import DetailField from "./DetailField";
+import { DetailField } from "@/components/DetailField";
 import { BASE_URL, fetchMerchantStatusCodes } from "@/lib/api";
 
 interface MerchantDetailModalProps {
@@ -24,11 +24,11 @@ interface MerchantDetailModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function MerchantDetailModal({
+export const MerchantDetailModal = ({
   mchtCode,
   open,
   onOpenChange
-}: MerchantDetailModalProps) {
+}: MerchantDetailModalProps) => {
   const [merchant, setMerchant] = useState<MerchantDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -107,7 +107,9 @@ export function MerchantDetailModal({
     if (!merchant) {
       return (
         <div className="py-8 text-center">
-          <p className="text-base text-gray-600">가맹점 정보를 불러올 수 없습니다.</p>
+          <p className="text-base text-gray-600">
+            가맹점 정보를 불러올 수 없습니다.
+          </p>
         </div>
       );
     }
@@ -187,4 +189,4 @@ export function MerchantDetailModal({
       </DialogContent>
     </Dialog>
   );
-}
+};

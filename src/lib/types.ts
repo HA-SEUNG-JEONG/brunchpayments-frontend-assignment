@@ -1,18 +1,30 @@
+export type MerchantStatus = "ACTIVE" | "INACTIVE" | "READY" | "CLOSED";
+export type BizType =
+  | "CAFE"
+  | "SHOP"
+  | "MART"
+  | "APP"
+  | "TRAVEL"
+  | "EDU"
+  | "TEST";
+export type TransactionStatus = "SUCCESS" | "FAILED" | "CANCELLED";
+export type PayType = "ONLINE" | "DEVICE" | "MOBILE" | "VACT" | "BILLING";
+
 export interface PaymentTransaction {
   paymentCode: string;
   mchtCode: string;
   amount: string;
   currency: string;
-  payType: string;
-  status: string;
+  payType: PayType;
+  status: TransactionStatus;
   paymentAt: string;
 }
 
 export interface Merchant {
   mchtCode: string;
   mchtName: string;
-  status: string;
-  bizType: string;
+  status: MerchantStatus;
+  bizType: BizType;
 }
 
 export interface MerchantDetail extends Merchant {

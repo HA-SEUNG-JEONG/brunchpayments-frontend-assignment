@@ -3,7 +3,7 @@ interface DetailFieldProps {
   children: React.ReactNode;
 }
 
-const DetailField = ({ label, children }: DetailFieldProps) => {
+export const DetailField = ({ label, children }: DetailFieldProps) => {
   return (
     <>
       <label className="text-sm font-medium text-gray-700">{label}</label>
@@ -11,5 +11,3 @@ const DetailField = ({ label, children }: DetailFieldProps) => {
     </>
   );
 };
-
-export default DetailField;

@@ -13,23 +13,28 @@ interface StatsCardsProps {
 }
 
 const getStatusCounts = (data: PaymentTransaction[]) => {
-  return data.reduce<Record<string, number>>((counts, item) => {
-    counts[item.status] = (counts[item.status] || 0) + 1;
-    return counts;
-  }, {});
+  const counts: Record<string, number> = {};
+
+  data.forEach((transaction) => {
+    const currentCount = counts[transaction.status] ?? 0;
+    counts[transaction.status] = currentCount + 1;
+  });
+
+  return counts;
 };
 
 const getCurrencyGroups = (data: PaymentTransaction[]) => {
-  return data.reduce<Record<string, number>>((groups, item) => {
-    if (!groups[item.currency]) {
-      groups[item.currency] = 0;
-    }
-    groups[item.currency] += Number(item.amount);
-    return groups;
-  }, {});
+  const groups: Record<string, number> = {};
+
+  data.forEach((transaction) => {
+    const currentAmount = groups[transaction.currency] ?? 0;
+    groups[transaction.currency] = currentAmount + Number(transaction.amount);
+  });
+
+  return groups;
 };
 
-export function StatsCards({ data }: StatsCardsProps) {
+export const StatsCards = ({ data }: StatsCardsProps) => {
   const statusCounts = getStatusCounts(data);
   const currencyGroups = getCurrencyGroups(data);
 
@@ -119,7 +124,7 @@ export function StatsCards({ data }: StatsCardsProps) {
                 총 거래액 ({currency})
               </h3>
               <div className="text-lg font-bold tracking-tight text-yellow-800">
-                {formatAmount(amount.toString(), currency)}
+                {formatAmount(amount.toString())}
               </div>
             </div>
             <div className="shrink-0 rounded-lg bg-yellow-100 p-3">
@@ -130,4 +135,4 @@ export function StatsCards({ data }: StatsCardsProps) {
       ))}
     </div>
   );
-}
+};

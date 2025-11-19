@@ -5,7 +5,10 @@ interface TableSkeletonProps {
   showHeader?: boolean;
 }
 
-export function TableSkeleton({ rowCount = 4, showHeader = true }: TableSkeletonProps) {
+export const TableSkeleton = ({
+  rowCount = 4,
+  showHeader = true
+}: TableSkeletonProps) => {
   return (
     <div className="rounded-xl border-2 border-gray-200 bg-white shadow-xl p-8">
       <div className="space-y-4">
@@ -18,5 +21,4 @@ export function TableSkeleton({ rowCount = 4, showHeader = true }: TableSkeleton
       </div>
     </div>
   );
-}
-
+};

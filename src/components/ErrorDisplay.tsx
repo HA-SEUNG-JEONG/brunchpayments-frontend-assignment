@@ -4,7 +4,7 @@ interface ErrorDisplayProps {
   error: string;
 }
 
-export function ErrorDisplay({ error }: ErrorDisplayProps) {
+export const ErrorDisplay = ({ error }: ErrorDisplayProps) => {
   const handleRetry = () => {
     window.location.reload();
   };
@@ -22,4 +22,4 @@ export function ErrorDisplay({ error }: ErrorDisplayProps) {
       </Button>
     </div>
   );
-}
+};
