@@ -7,7 +7,8 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/SearchInput";
+import { FilterResultDisplay } from "@/components/FilterResultDisplay";
 import { MerchantDetailModal } from "@/components/MerchantDetailModal";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { TableSkeleton } from "@/components/TableSkeleton";
@@ -149,22 +150,12 @@ export function MerchantsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* 검색 입력 */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="merchant-search"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    검색
-                  </label>
-                  <Input
-                    id="merchant-search"
-                    type="text"
-                    placeholder="가맹점 코드 또는 가맹점명"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
+                <SearchInput
+                  id="merchant-search"
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="가맹점 코드 또는 가맹점명"
+                />
 
                 {/* 가맹점 상태 필터 */}
                 <div className="flex flex-col gap-2">
@@ -214,17 +205,11 @@ export function MerchantsPage() {
               </div>
 
               {/* 필터 결과 표시 */}
-              <div className="text-base text-gray-600">
-                {filteredMerchants.length !== merchants.length && (
-                  <span>
-                    전체 {merchants.length.toLocaleString("ko-KR")}개 중{" "}
-                    <span className="font-bold text-blue-600">
-                      {filteredMerchants.length.toLocaleString("ko-KR")}개
-                    </span>{" "}
-                    표시
-                  </span>
-                )}
-              </div>
+              <FilterResultDisplay
+                totalCount={merchants.length}
+                filteredCount={filteredMerchants.length}
+                unit="개"
+              />
             </div>
           </form>
         </section>

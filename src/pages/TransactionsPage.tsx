@@ -135,7 +135,7 @@ export function TransactionsPage() {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  // 고유한 값들 추출 (필터 옵션용) - 데이터 로딩 후 불변이므로 useMemo 사용
+  // 고유한 값들 추출 (필터 옵션용)
   const uniqueStatuses = useMemo(
     () => Array.from(new Set(data.map((item) => item.status))),
     [data]
@@ -187,55 +187,59 @@ export function TransactionsPage() {
           className="rounded-xl border-2 border-gray-200 bg-white shadow-xl p-6 mb-6"
           aria-label="검색 및 필터"
         >
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900">검색 및 필터</h2>
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-medium"
-              >
-                초기화
-              </button>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900">
+                  검색 및 필터
+                </h2>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  초기화
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 검색 입력 */}
+                <SearchInput
+                  id="transaction-search"
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="가맹점 코드 또는 결제 코드"
+                />
+
+                {/* 결제 상태 필터 */}
+                <StatusFilter
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  statuses={uniqueStatuses}
+                  paymentStatusCodes={paymentStatusCodes}
+                />
+
+                {/* 결제 수단 필터 */}
+                <PayTypeFilter
+                  value={payTypeFilter}
+                  onChange={setPayTypeFilter}
+                  payTypes={uniquePayTypes}
+                />
+
+                {/* 통화 필터 */}
+                <CurrencyFilter
+                  value={currencyFilter}
+                  onChange={setCurrencyFilter}
+                  currencies={uniqueCurrencies}
+                />
+              </div>
+
+              {/* 필터 결과 표시 */}
+              <FilterResultDisplay
+                totalCount={data.length}
+                filteredCount={filteredData.length}
+              />
             </div>
-
-            {/* 검색 입력 */}
-            <SearchInput
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="가맹점 코드 또는 결제 코드"
-            />
-
-            {/* 결제 상태 필터 */}
-            <StatusFilter
-              value={statusFilter}
-              onChange={setStatusFilter}
-              statuses={uniqueStatuses}
-              paymentStatusCodes={paymentStatusCodes}
-            />
-
-            {/* 결제 수단 필터 */}
-            <PayTypeFilter
-              value={payTypeFilter}
-              onChange={setPayTypeFilter}
-              payTypes={uniquePayTypes}
-            />
-
-            {/* 통화 필터 */}
-            <CurrencyFilter
-              value={currencyFilter}
-              onChange={setCurrencyFilter}
-              currencies={uniqueCurrencies}
-            />
-
-            {/* 필터 결과 표시 */}
-            <FilterResultDisplay
-              totalCount={data.length}
-              filteredCount={filteredData.length}
-            />
           </form>
         </section>
 
