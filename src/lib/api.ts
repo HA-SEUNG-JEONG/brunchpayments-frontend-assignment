@@ -10,6 +10,7 @@ export async function fetchPaymentStatusCodes(): Promise<CommonCode[]> {
     );
   }
   const { data } = await response.json();
+  console.log(data, "data");
   return data;
 }
 
@@ -37,14 +38,6 @@ export async function fetchMerchantStatusCodes(): Promise<CommonCode[]> {
 
 export async function logout(): Promise<void> {
   // 로컬 스토리지에서 토큰 제거
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-
-  // 추가적인 로그아웃 API 호출이 필요한 경우 여기에 구현
-  // const response = await fetch(`${BASE_URL}/auth/logout`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-  //   }
-  // });
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
 }

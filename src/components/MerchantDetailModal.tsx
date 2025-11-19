@@ -99,15 +99,15 @@ export function MerchantDetailModal({
     if (error) {
       return (
         <div className="py-8 text-center">
-          <p className="text-red-600 font-medium">{error}</p>
+          <p className="text-base text-red-600 font-medium">{error}</p>
         </div>
       );
     }
 
     if (!merchant) {
       return (
-        <div className="py-8 text-center text-gray-500">
-          가맹점 정보를 불러올 수 없습니다.
+        <div className="py-8 text-center">
+          <p className="text-base text-gray-600">가맹점 정보를 불러올 수 없습니다.</p>
         </div>
       );
     }

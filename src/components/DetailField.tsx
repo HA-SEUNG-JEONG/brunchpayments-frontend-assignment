@@ -6,7 +6,7 @@ interface DetailFieldProps {
 const DetailField = ({ label, children }: DetailFieldProps) => {
   return (
     <>
-      <label className="text-sm font-medium text-gray-500">{label}</label>
+      <label className="text-sm font-medium text-gray-700">{label}</label>
       <div className="mt-1">{children}</div>
     </>
   );

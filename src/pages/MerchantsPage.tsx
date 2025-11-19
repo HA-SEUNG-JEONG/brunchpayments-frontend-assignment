@@ -15,6 +15,7 @@ import {
   cn,
   getMerchantStatusColor,
   getBizTypeLabel,
+  getBizTypeColor,
   getCodeLabel
 } from "@/lib/utils";
 import { useFilteredData } from "@/hooks/useFilteredData";
@@ -140,7 +141,7 @@ export function MerchantsPage() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  className="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-medium"
                 >
                   초기화
                 </button>
@@ -213,7 +214,7 @@ export function MerchantsPage() {
               </div>
 
               {/* 필터 결과 표시 */}
-              <div className="text-sm text-gray-600">
+              <div className="text-base text-gray-600">
                 {filteredMerchants.length !== merchants.length && (
                   <span>
                     전체 {merchants.length.toLocaleString("ko-KR")}개 중{" "}
@@ -256,7 +257,7 @@ export function MerchantsPage() {
                 <TableRow>
                   <TableCell
                     colSpan={4}
-                    className="text-center py-12 text-gray-500"
+                    className="text-center py-12 text-base text-gray-600"
                   >
                     {merchants.length === 0
                       ? "가맹점이 없습니다."
@@ -286,8 +287,15 @@ export function MerchantsPage() {
                         {getCodeLabel(merchant.status, merchantStatusCodes)}
                       </span>
                     </TableCell>
-                    <TableCell className="text-gray-700">
-                      {getBizTypeLabel(merchant.bizType)}
+                    <TableCell>
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold shadow-sm",
+                          getBizTypeColor(merchant.bizType)
+                        )}
+                      >
+                        {getBizTypeLabel(merchant.bizType)}
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))

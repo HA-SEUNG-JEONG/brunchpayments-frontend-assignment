@@ -45,7 +45,7 @@ export function StatsCards({ data }: StatsCardsProps) {
       valueColor: "text-blue-700"
     },
     {
-      title: "성공",
+      title: "결제 성공",
       value: statusCounts.SUCCESS || 0,
       unit: "건",
       icon: CheckCircle2,
@@ -55,7 +55,7 @@ export function StatsCards({ data }: StatsCardsProps) {
       valueColor: "text-green-700"
     },
     {
-      title: "실패",
+      title: "결제 실패",
       value: statusCounts.FAILED || 0,
       unit: "건",
       icon: XCircle,
@@ -65,7 +65,7 @@ export function StatsCards({ data }: StatsCardsProps) {
       valueColor: "text-red-700"
     },
     {
-      title: "취소",
+      title: "결제 취소",
       value: statusCounts.CANCELLED || 0,
       unit: "건",
       icon: Ban,
@@ -87,7 +87,7 @@ export function StatsCards({ data }: StatsCardsProps) {
           >
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
+                <h3 className="mb-2 text-base font-semibold uppercase tracking-wide text-gray-600">
                   {stat.title}
                 </h3>
                 <div className="flex items-baseline space-x-2">
@@ -115,7 +115,7 @@ export function StatsCards({ data }: StatsCardsProps) {
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
+              <h3 className="mb-2 text-base font-semibold uppercase tracking-wide text-gray-600">
                 총 거래액 ({currency})
               </h3>
               <div className="text-lg font-bold tracking-tight text-yellow-800">

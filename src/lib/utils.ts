@@ -30,7 +30,7 @@ export function formatAmount(amount: string, currency: string): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(numAmount);
-  return `${formatted} ${currency}`;
+  return `${formatted}`;
 }
 
 export function getStatusColor(status: string): string {
@@ -74,13 +74,51 @@ export function getBizTypeLabel(bizType: string): string {
   return labels[bizType] || bizType;
 }
 
+export function getBizTypeColor(bizType: string): string {
+  switch (bizType) {
+    case "CAFE":
+      return "bg-amber-100 text-amber-800";
+    case "SHOP":
+      return "bg-pink-100 text-pink-800";
+    case "MART":
+      return "bg-cyan-100 text-cyan-800";
+    case "APP":
+      return "bg-indigo-100 text-indigo-800";
+    case "TRAVEL":
+      return "bg-sky-100 text-sky-800";
+    case "EDU":
+      return "bg-violet-100 text-violet-800";
+    case "TEST":
+      return "bg-slate-100 text-slate-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
+
 export function getPayTypeLabel(payType: string): string {
   const labels: Record<string, string> = {
+    ONLINE: "온라인",
     DEVICE: "단말기",
     MOBILE: "모바일",
-    ONLINE: "온라인",
-    BILLING: "자동결제",
-    VACT: "가상계좌"
+    VACT: "가상계좌",
+    BILLING: "정기결제"
   };
   return labels[payType] || payType;
+}
+
+export function getPayTypeColor(payType: string): string {
+  switch (payType) {
+    case "DEVICE":
+      return "bg-blue-500 text-white";
+    case "MOBILE":
+      return "bg-purple-500 text-white";
+    case "ONLINE":
+      return "bg-green-500 text-white";
+    case "BILLING":
+      return "bg-orange-500 text-white";
+    case "VACT":
+      return "bg-teal-500 text-white";
+    default:
+      return "bg-gray-500 text-white";
+  }
 }

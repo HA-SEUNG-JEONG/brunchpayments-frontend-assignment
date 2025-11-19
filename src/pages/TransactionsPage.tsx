@@ -21,13 +21,11 @@ import {
   formatAmount,
   getStatusColor,
   getCodeLabel,
+  getPayTypeColor,
+  getPayTypeLabel,
   cn
 } from "@/lib/utils";
-import {
-  BASE_URL,
-  fetchPaymentStatusCodes,
-  fetchPaymentTypeCodes
-} from "@/lib/api";
+import { BASE_URL, fetchPaymentStatusCodes } from "@/lib/api";
 
 export function TransactionsPage() {
   const [data, setData] = useState<PaymentTransaction[]>([]);
@@ -42,7 +40,6 @@ export function TransactionsPage() {
   const [paymentStatusCodes, setPaymentStatusCodes] = useState<CommonCode[]>(
     []
   );
-  const [paymentTypeCodes, setPaymentTypeCodes] = useState<CommonCode[]>([]);
 
   // 검색 및 필터 상태
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,12 +53,8 @@ export function TransactionsPage() {
   useEffect(() => {
     const loadCommonCodes = async () => {
       try {
-        const [statusCodes, typeCodes] = await Promise.all([
-          fetchPaymentStatusCodes(),
-          fetchPaymentTypeCodes()
-        ]);
+        const statusCodes = await fetchPaymentStatusCodes();
         setPaymentStatusCodes(statusCodes);
-        setPaymentTypeCodes(typeCodes);
       } catch (error) {
         console.error("결제 상태 코드를 불러오는데 실패했습니다.:", error);
       }
@@ -212,7 +205,7 @@ export function TransactionsPage() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  className="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-medium"
                 >
                   초기화
                 </button>
@@ -277,7 +270,7 @@ export function TransactionsPage() {
                     <option value="">전체</option>
                     {uniquePayTypes.map((payType) => (
                       <option key={payType} value={payType}>
-                        {getCodeLabel(payType, paymentTypeCodes)}
+                        {getPayTypeLabel(payType)}
                       </option>
                     ))}
                   </select>
@@ -308,7 +301,7 @@ export function TransactionsPage() {
               </div>
 
               {/* 필터 결과 표시 */}
-              <div className="text-sm text-gray-600">
+              <div className="text-base text-gray-600">
                 {filteredData.length !== data.length && (
                   <span>
                     전체 {data.length.toLocaleString("ko-KR")}건 중{" "}
@@ -358,7 +351,7 @@ export function TransactionsPage() {
                 <TableRow>
                   <TableCell
                     colSpan={7}
-                    className="text-center py-12 text-gray-500"
+                    className="text-center py-12 text-base text-gray-600"
                   >
                     거래내역이 없습니다.
                   </TableCell>
@@ -382,11 +375,18 @@ export function TransactionsPage() {
                     <TableCell className="font-bold text-gray-900">
                       {formatAmount(item.amount, item.currency)}
                     </TableCell>
-                    <TableCell className="text-gray-700 font-medium">
+                    <TableCell className="text-gray-900 font-medium">
                       {item.currency}
                     </TableCell>
-                    <TableCell className="text-gray-700">
-                      {getCodeLabel(item.payType, paymentTypeCodes)}
+                    <TableCell>
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold shadow-sm",
+                          getPayTypeColor(item.payType)
+                        )}
+                      >
+                        {getPayTypeLabel(item.payType)}
+                      </span>
                     </TableCell>
                     <TableCell>
                       <span
@@ -398,7 +398,7 @@ export function TransactionsPage() {
                         {getCodeLabel(item.status, paymentStatusCodes)}
                       </span>
                     </TableCell>
-                    <TableCell className="text-sm text-gray-600">
+                    <TableCell className="text-sm text-gray-900">
                       {formatDate(item.paymentAt)}
                     </TableCell>
                   </TableRow>
@@ -413,7 +413,7 @@ export function TransactionsPage() {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
-              className="rounded-lg border-2 border-blue-500 bg-blue-500 px-5 py-2.5 text-sm font-bold text-black transition-all hover:bg-blue-600 hover:shadow-lg disabled:border-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="rounded-lg bg-white border-2 border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
             >
               이전
             </button>
@@ -431,7 +431,7 @@ export function TransactionsPage() {
                 setCurrentPage((prev) => Math.min(totalPages, prev + 1))
               }
               disabled={currentPage === totalPages}
-              className="rounded-lg border-2 border-blue-500 bg-blue-500 px-5 py-2.5 text-sm font-bold text-black transition-all hover:bg-blue-600 hover:shadow-lg disabled:border-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="rounded-lg bg-white border-2 border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
             >
               다음
             </button>
