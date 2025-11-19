@@ -3,28 +3,19 @@ import type { PaymentTransaction, CommonCode } from "@/lib/types";
 import { StatsCards } from "@/components/StatsCards";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { TableSkeleton } from "@/components/TableSkeleton";
+import { StatusFilter } from "@/components/StatusFilter";
+import { PayTypeFilter } from "@/components/PayTypeFilter";
+import { CurrencyFilter } from "@/components/CurrencyFilter";
+import { FilterResultDisplay } from "@/components/FilterResultDisplay";
+import { SearchInput } from "@/components/SearchInput";
+import { TransactionsTableHeader } from "@/components/TransactionsTableHeader";
+import { TransactionsTableBody } from "@/components/TransactionsTableBody";
+import { Pagination } from "@/components/Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useFilteredData } from "@/hooks/useFilteredData";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table";
-import {
-  formatDate,
-  formatAmount,
-  getStatusColor,
-  getCodeLabel,
-  getPayTypeColor,
-  getPayTypeLabel,
-  cn
-} from "@/lib/utils";
+import { Table } from "@/components/ui/table";
 import { BASE_URL, fetchPaymentStatusCodes } from "@/lib/api";
 
 export function TransactionsPage() {
@@ -196,123 +187,55 @@ export function TransactionsPage() {
           className="rounded-xl border-2 border-gray-200 bg-white shadow-xl p-6 mb-6"
           aria-label="검색 및 필터"
         >
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900">
-                  검색 및 필터
-                </h2>
-                <button
-                  type="button"
-                  onClick={handleResetFilters}
-                  className="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  초기화
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* 검색 입력 */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="transaction-search"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    검색
-                  </label>
-                  <Input
-                    id="transaction-search"
-                    type="text"
-                    placeholder="가맹점 코드 또는 결제 코드"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* 결제 상태 필터 */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="transaction-status-filter"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    결제 상태
-                  </label>
-                  <select
-                    id="transaction-status-filter"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">전체</option>
-                    {uniqueStatuses.map((status) => (
-                      <option key={status} value={status}>
-                        {getCodeLabel(status, paymentStatusCodes)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 결제 수단 필터 */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="transaction-paytype-filter"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    결제 수단
-                  </label>
-                  <select
-                    id="transaction-paytype-filter"
-                    value={payTypeFilter}
-                    onChange={(e) => setPayTypeFilter(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">전체</option>
-                    {uniquePayTypes.map((payType) => (
-                      <option key={payType} value={payType}>
-                        {getPayTypeLabel(payType)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 통화 필터 */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="transaction-currency-filter"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    통화
-                  </label>
-                  <select
-                    id="transaction-currency-filter"
-                    value={currencyFilter}
-                    onChange={(e) => setCurrencyFilter(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">전체</option>
-                    {uniqueCurrencies.map((currency) => (
-                      <option key={currency} value={currency}>
-                        {currency}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* 필터 결과 표시 */}
-              <div className="text-base text-gray-600">
-                {filteredData.length !== data.length && (
-                  <span>
-                    전체 {data.length.toLocaleString("ko-KR")}건 중{" "}
-                    <span className="font-bold text-blue-600">
-                      {filteredData.length.toLocaleString("ko-KR")}건
-                    </span>{" "}
-                    표시
-                  </span>
-                )}
-              </div>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">검색 및 필터</h2>
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="cursor-pointer text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                초기화
+              </button>
             </div>
+
+            {/* 검색 입력 */}
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="가맹점 코드 또는 결제 코드"
+            />
+
+            {/* 결제 상태 필터 */}
+            <StatusFilter
+              value={statusFilter}
+              onChange={setStatusFilter}
+              statuses={uniqueStatuses}
+              paymentStatusCodes={paymentStatusCodes}
+            />
+
+            {/* 결제 수단 필터 */}
+            <PayTypeFilter
+              value={payTypeFilter}
+              onChange={setPayTypeFilter}
+              payTypes={uniquePayTypes}
+            />
+
+            {/* 통화 필터 */}
+            <CurrencyFilter
+              value={currencyFilter}
+              onChange={setCurrencyFilter}
+              currencies={uniqueCurrencies}
+            />
+
+            {/* 필터 결과 표시 */}
+            <FilterResultDisplay
+              totalCount={data.length}
+              filteredCount={filteredData.length}
+            />
           </form>
         </section>
 
@@ -327,115 +250,20 @@ export function TransactionsPage() {
             </p>
           </header>
           <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-100 hover:bg-gray-100">
-                <TableHead className="font-bold text-gray-900">
-                  결제코드
-                </TableHead>
-                <TableHead className="font-bold text-gray-900">
-                  가맹점코드
-                </TableHead>
-                <TableHead className="font-bold text-gray-900">금액</TableHead>
-                <TableHead className="font-bold text-gray-900">통화</TableHead>
-                <TableHead className="font-bold text-gray-900">
-                  결제수단
-                </TableHead>
-                <TableHead className="font-bold text-gray-900">상태</TableHead>
-                <TableHead className="font-bold text-gray-900">
-                  결제일시
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {displayedItems.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={7}
-                    className="text-center py-12 text-base text-gray-600"
-                  >
-                    거래내역이 없습니다.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                displayedItems.map((item, index) => (
-                  <TableRow
-                    key={item.paymentCode}
-                    className={cn(
-                      "transition-colors",
-                      index % 2 === 0 ? "bg-white" : "bg-gray-50",
-                      "hover:bg-blue-50"
-                    )}
-                  >
-                    <TableCell className="font-mono text-sm text-gray-900">
-                      {item.paymentCode}
-                    </TableCell>
-                    <TableCell className="font-mono text-sm text-gray-900">
-                      {item.mchtCode}
-                    </TableCell>
-                    <TableCell className="font-bold text-gray-900">
-                      {formatAmount(item.amount, item.currency)}
-                    </TableCell>
-                    <TableCell className="text-gray-900 font-medium">
-                      {item.currency}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={cn(
-                          "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold shadow-sm",
-                          getPayTypeColor(item.payType)
-                        )}
-                      >
-                        {getPayTypeLabel(item.payType)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={cn(
-                          "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold shadow-sm",
-                          getStatusColor(item.status)
-                        )}
-                      >
-                        {getCodeLabel(item.status, paymentStatusCodes)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-900">
-                      {formatDate(item.paymentAt)}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
+            <TransactionsTableHeader />
+            <TransactionsTableBody
+              displayedItems={displayedItems}
+              paymentStatusCodes={paymentStatusCodes}
+            />
           </Table>
         </section>
 
         {!isMobile && totalPages > 1 && (
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              disabled={currentPage === 1}
-              className="rounded-lg bg-white border-2 border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
-            >
-              이전
-            </button>
-            <div className="flex items-center gap-2 rounded-lg bg-gray-200 px-4 py-2.5">
-              <span className="text-sm font-bold text-gray-900">
-                {currentPage}
-              </span>
-              <span className="text-sm text-gray-600">/</span>
-              <span className="text-sm font-bold text-gray-600">
-                {totalPages}
-              </span>
-            </div>
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-              }
-              disabled={currentPage === totalPages}
-              className="rounded-lg bg-white border-2 border-gray-300 px-5 py-2.5 text-sm font-bold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:border-gray-300"
-            >
-              다음
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         )}
 
         {isMobile && displayedItems.length < filteredData.length && (
