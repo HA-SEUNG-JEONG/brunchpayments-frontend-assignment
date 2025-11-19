@@ -88,7 +88,7 @@ export const StatsCards = ({ data }: StatsCardsProps) => {
         return (
           <article
             key={stat.title}
-            className={`group relative overflow-hidden rounded-xl border-2 ${stat.cardBg} border-gray-200 p-6 shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105`}
+            className={`group relative overflow-hidden rounded-xl border-2 ${stat.cardBg} border-gray-200 p-6`}
           >
             <div className="flex items-start justify-between">
               <div>
