@@ -5,12 +5,65 @@ import {
   CheckCircle2,
   XCircle,
   Ban,
-  DollarSign
+  DollarSign,
+  type LucideIcon
 } from "lucide-react";
 
 interface StatsCardsProps {
   data: PaymentTransaction[];
 }
+
+interface StatCard {
+  title: string;
+  value: string | number;
+  unit: string;
+  icon: LucideIcon;
+  bgColor: string;
+  iconColor: string;
+  cardBg: string;
+  valueColor: string;
+}
+
+type StatusType = "total" | "success" | "failed" | "cancelled";
+
+const STAT_CONFIG: Record<StatusType, Omit<StatCard, "value">> = {
+  total: {
+    title: "총 거래 건수",
+    unit: "건",
+    icon: TrendingUp,
+    bgColor: "bg-blue-100",
+    iconColor: "text-blue-600",
+    cardBg: "bg-blue-50",
+    valueColor: "text-blue-700"
+  },
+  success: {
+    title: "결제 성공",
+    unit: "건",
+    icon: CheckCircle2,
+    bgColor: "bg-green-100",
+    iconColor: "text-green-600",
+    cardBg: "bg-green-50",
+    valueColor: "text-green-700"
+  },
+  failed: {
+    title: "결제 실패",
+    unit: "건",
+    icon: XCircle,
+    bgColor: "bg-red-100",
+    iconColor: "text-red-600",
+    cardBg: "bg-red-50",
+    valueColor: "text-red-700"
+  },
+  cancelled: {
+    title: "결제 취소",
+    unit: "건",
+    icon: Ban,
+    bgColor: "bg-gray-100",
+    iconColor: "text-gray-600",
+    cardBg: "bg-gray-50",
+    valueColor: "text-gray-700"
+  }
+};
 
 const getStatusCounts = (data: PaymentTransaction[]) => {
   const counts: Record<string, number> = {};
@@ -38,46 +91,22 @@ export const StatsCards = ({ data }: StatsCardsProps) => {
   const statusCounts = getStatusCounts(data);
   const currencyGroups = getCurrencyGroups(data);
 
-  const stats = [
+  const stats: StatCard[] = [
     {
-      title: "총 거래 건수",
-      value: data.length.toLocaleString("ko-KR"),
-      unit: "건",
-      icon: TrendingUp,
-      bgColor: "bg-blue-100",
-      iconColor: "text-blue-600",
-      cardBg: "bg-blue-50",
-      valueColor: "text-blue-700"
+      ...STAT_CONFIG.total,
+      value: data.length.toLocaleString("ko-KR")
     },
     {
-      title: "결제 성공",
-      value: statusCounts.SUCCESS || 0,
-      unit: "건",
-      icon: CheckCircle2,
-      bgColor: "bg-green-100",
-      iconColor: "text-green-600",
-      cardBg: "bg-green-50",
-      valueColor: "text-green-700"
+      ...STAT_CONFIG.success,
+      value: statusCounts.SUCCESS || 0
     },
     {
-      title: "결제 실패",
-      value: statusCounts.FAILED || 0,
-      unit: "건",
-      icon: XCircle,
-      bgColor: "bg-red-100",
-      iconColor: "text-red-600",
-      cardBg: "bg-red-50",
-      valueColor: "text-red-700"
+      ...STAT_CONFIG.failed,
+      value: statusCounts.FAILED || 0
     },
     {
-      title: "결제 취소",
-      value: statusCounts.CANCELLED || 0,
-      unit: "건",
-      icon: Ban,
-      bgColor: "bg-gray-100",
-      iconColor: "text-gray-600",
-      cardBg: "bg-gray-50",
-      valueColor: "text-gray-700"
+      ...STAT_CONFIG.cancelled,
+      value: statusCounts.CANCELLED || 0
     }
   ];
 
