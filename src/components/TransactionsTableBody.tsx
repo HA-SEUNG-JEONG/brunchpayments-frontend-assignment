@@ -31,49 +31,42 @@ export function TransactionsTableBody({
           </TableCell>
         </TableRow>
       ) : (
-        displayedItems.map((item, index) => (
-          <TableRow
-            key={item.paymentCode}
-            className={cn(
-              "transition-colors",
-              index % 2 === 0 ? "bg-white" : "bg-gray-50",
-              "hover:bg-blue-50"
-            )}
-          >
+        displayedItems.map((displayedItem) => (
+          <TableRow key={displayedItem.paymentCode}>
             <TableCell className="font-mono text-sm text-gray-900">
-              {item.paymentCode}
+              {displayedItem.paymentCode}
             </TableCell>
             <TableCell className="font-mono text-sm text-gray-900">
-              {item.mchtCode}
+              {displayedItem.mchtCode}
             </TableCell>
             <TableCell className="font-bold text-gray-900">
-              {formatAmount(item.amount)}
+              {formatAmount(displayedItem.amount)}
             </TableCell>
             <TableCell className="text-gray-900 font-medium">
-              {item.currency}
+              {displayedItem.currency}
             </TableCell>
             <TableCell>
               <span
                 className={cn(
                   "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold shadow-sm",
-                  getPayTypeColor(item.payType)
+                  getPayTypeColor(displayedItem.payType)
                 )}
               >
-                {getPayTypeLabel(item.payType)}
+                {getPayTypeLabel(displayedItem.payType)}
               </span>
             </TableCell>
             <TableCell>
               <span
                 className={cn(
                   "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold shadow-sm",
-                  getStatusColor(item.status)
+                  getStatusColor(displayedItem.status)
                 )}
               >
-                {getCodeLabel(item.status, paymentStatusCodes)}
+                {getCodeLabel(displayedItem.status, paymentStatusCodes)}
               </span>
             </TableCell>
             <TableCell className="text-sm text-gray-900">
-              {formatDate(item.paymentAt)}
+              {formatDate(displayedItem.paymentAt)}
             </TableCell>
           </TableRow>
         ))
@@ -81,4 +74,3 @@ export function TransactionsTableBody({
     </TableBody>
   );
 }
-
