@@ -34,9 +34,3 @@ export async function fetchMerchantStatusCodes(): Promise<CommonCode[]> {
   const { data } = await response.json();
   return data;
 }
-
-export async function logout(): Promise<void> {
-  // 로컬 스토리지에서 토큰 제거
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-}
