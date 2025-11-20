@@ -16,7 +16,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MerchantDetail, CommonCode } from "@/lib/types";
 import { DetailField } from "@/components/DetailField";
-import { BASE_URL, fetchMerchantStatusCodes } from "@/lib/api";
+import { fetchMerchantStatusCodes, fetchMerchantDetail } from "@/lib/api";
 
 interface MerchantDetailModalProps {
   mchtCode: string | null;
@@ -56,19 +56,11 @@ export const MerchantDetailModal = ({
       return;
     }
 
-    const fetchMerchantDetail = async () => {
+    const loadMerchantDetail = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(
-          `${BASE_URL}/merchants/details/${mchtCode}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`서버 오류: ${response.status}`);
-        }
-
-        const { data } = await response.json();
+        const data = await fetchMerchantDetail(mchtCode);
         setMerchant(data);
       } catch (error) {
         setError(
@@ -82,7 +74,7 @@ export const MerchantDetailModal = ({
       }
     };
 
-    fetchMerchantDetail();
+    loadMerchantDetail();
   }, [mchtCode, open]);
 
   const renderModalContent = () => {

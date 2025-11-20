@@ -12,7 +12,7 @@ import { MerchantsTableBody } from "@/components/MerchantsTableBody";
 import { useFilteredData } from "@/hooks/useFilteredData";
 import { useDebounce } from "@/hooks/useDebounce";
 import type { Merchant, CommonCode } from "@/lib/types";
-import { BASE_URL, fetchMerchantStatusCodes } from "@/lib/api";
+import { fetchMerchantsList, fetchMerchantStatusCodes } from "@/lib/api";
 
 export function MerchantsPage() {
   const [merchants, setMerchants] = useState<Merchant[]>([]);
@@ -52,13 +52,7 @@ export function MerchantsPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${BASE_URL}/merchants/list`);
-
-        if (!response.ok) {
-          throw new Error(`서버 오류: ${response.status}`);
-        }
-
-        const { data } = await response.json();
+        const data = await fetchMerchantsList();
         setMerchants(data);
       } catch (error) {
         setError(

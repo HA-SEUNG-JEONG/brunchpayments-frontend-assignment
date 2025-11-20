@@ -1,16 +1,18 @@
-import { getPayTypeLabel } from "@/lib/utils";
-import type { PayType } from "@/lib/types";
+import { getCodeLabel } from "@/lib/utils";
+import type { PayType, CommonCode } from "@/lib/types";
 
 interface PayTypeFilterProps {
   value: string;
   onChange: (value: string) => void;
   payTypes: PayType[];
+  paymentTypeCodes: CommonCode[];
 }
 
 export function PayTypeFilter({
   value,
   onChange,
-  payTypes
+  payTypes,
+  paymentTypeCodes
 }: PayTypeFilterProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -29,7 +31,7 @@ export function PayTypeFilter({
         <option value="">전체</option>
         {payTypes.map((payType) => (
           <option key={payType} value={payType}>
-            {getPayTypeLabel(payType)}
+            {getCodeLabel(payType, paymentTypeCodes)}
           </option>
         ))}
       </select>

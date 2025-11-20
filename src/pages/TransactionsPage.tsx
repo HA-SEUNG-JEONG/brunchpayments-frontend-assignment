@@ -16,7 +16,11 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useFilteredData } from "@/hooks/useFilteredData";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Table } from "@/components/ui/table";
-import { BASE_URL, fetchPaymentStatusCodes } from "@/lib/api";
+import {
+  fetchPaymentStatusCodes,
+  fetchPaymentTypeCodes,
+  fetchPaymentsList
+} from "@/lib/api";
 
 export function TransactionsPage() {
   const [data, setData] = useState<PaymentTransaction[]>([]);
@@ -31,6 +35,7 @@ export function TransactionsPage() {
   const [paymentStatusCodes, setPaymentStatusCodes] = useState<CommonCode[]>(
     []
   );
+  const [paymentTypeCodes, setPaymentTypeCodes] = useState<CommonCode[]>([]);
 
   // 검색 및 필터 상태
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,27 +49,25 @@ export function TransactionsPage() {
   useEffect(() => {
     const loadCommonCodes = async () => {
       try {
-        const statusCodes = await fetchPaymentStatusCodes();
+        const [statusCodes, typeCodes] = await Promise.all([
+          fetchPaymentStatusCodes(),
+          fetchPaymentTypeCodes()
+        ]);
         setPaymentStatusCodes(statusCodes);
+        setPaymentTypeCodes(typeCodes);
       } catch (error) {
-        console.error("결제 상태 코드를 불러오는데 실패했습니다.:", error);
+        console.error("공통 코드를 불러오는데 실패했습니다.:", error);
       }
     };
     loadCommonCodes();
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadPaymentsList = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${BASE_URL}/payments/list`);
-
-        if (!response.ok) {
-          throw new Error(`서버 오류: ${response.status}`);
-        }
-
-        const { data } = await response.json();
+        const data = await fetchPaymentsList();
         setData(data);
       } catch (error) {
         setError(
@@ -76,7 +79,7 @@ export function TransactionsPage() {
         setIsLoading(false);
       }
     };
-    fetchData();
+    loadPaymentsList();
   }, []);
 
   // 필터링 시 첫 페이지로 리셋
@@ -224,6 +227,7 @@ export function TransactionsPage() {
                   value={payTypeFilter}
                   onChange={setPayTypeFilter}
                   payTypes={uniquePayTypes}
+                  paymentTypeCodes={paymentTypeCodes}
                 />
 
                 {/* 통화 필터 */}
