@@ -1,9 +1,10 @@
+import type { BizType } from "@/lib/types";
 import { getBizTypeLabel } from "@/lib/utils";
 
 interface BizTypeFilterProps {
   value: string;
   onChange: (value: string) => void;
-  bizTypes: string[];
+  bizTypes: BizType[];
 }
 
 export function BizTypeFilter({
@@ -35,4 +36,3 @@ export function BizTypeFilter({
     </div>
   );
 }
-
